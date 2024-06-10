@@ -5,8 +5,7 @@ NULLABLE = {"blank": True, "null": True}
 
 class Category(models.Model):
     name_category = models.CharField(
-        max_length=50, verbose_name="Категория",
-        help_text="Введите название категории"
+        max_length=50, verbose_name="Категория", help_text="Введите название категории"
     )
     description = models.TextField(
         verbose_name="Описание", help_text="Введите описание товара"
@@ -22,8 +21,7 @@ class Category(models.Model):
 
 class Product(models.Model):
     name_product = models.CharField(
-        max_length=100, verbose_name="Товар",
-        help_text="Введите наименование товара"
+        max_length=100, verbose_name="Товар", help_text="Введите наименование товара"
     )
     description = models.TextField(
         verbose_name="Описание", help_text="Введите описание товара", **NULLABLE
@@ -31,19 +29,21 @@ class Product(models.Model):
     image = models.ImageField(
         upload_to="products/", **NULLABLE, help_text="Загрузите фото продукта"
     )
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL,
-                                 **NULLABLE, related_name='products')
+    category = models.ForeignKey(
+        Category, on_delete=models.SET_NULL, **NULLABLE, related_name="products"
+    )
     price = models.FloatField(verbose_name="Цена за покупку")
     created_at = models.DateField(
         auto_now_add=True,
         editable=False,
         verbose_name="Дата создания (записи в БД)",
-        null=True)
+        null=True,
+    )
     updated_at = models.DateField(
         auto_now=True,
         editable=False,
         verbose_name="Дата последнего изменения (записи в БД)",
-        null=True
+        null=True,
     )
 
     def __str__(self):
