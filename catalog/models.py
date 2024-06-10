@@ -46,12 +46,6 @@ class Product(models.Model):
         null=True,
     )
 
-    manufactured_at = models.DateField(
-        auto_now_add=True,
-        editable=False,
-        verbose_name="Дата производства",
-        null=True,
-    )
 
     def __str__(self):
         return f"{self.name_product}\n" f"{self.description}\n"
