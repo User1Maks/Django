@@ -29,7 +29,10 @@ class Product(models.Model):
         verbose_name="Описание", help_text="Введите описание товара", **NULLABLE
     )
     image = models.ImageField(
-        upload_to="products/", **NULLABLE, help_text="Загрузите фото продукта"
+        upload_to="products/image",
+        **NULLABLE,
+        verbose_name="Изображение",
+        help_text="Загрузите изображение продукта"
     )
     category = models.ForeignKey(
         Category, on_delete=models.SET_NULL, **NULLABLE, related_name="products"
@@ -49,7 +52,7 @@ class Product(models.Model):
     )
 
     def __str__(self):
-        return f"{self.name_product}\n" f"{self.description}\n"
+        return f"{self.name_product}"
 
     class Meta:
         verbose_name = "Продукт"
