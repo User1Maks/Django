@@ -1,5 +1,5 @@
 from django.contrib import admin
-from catalog.models import Category, Product
+from catalog.models import Category, Product, Blog
 
 
 @admin.register(Category)
@@ -18,4 +18,13 @@ class ProductAdmin(admin.ModelAdmin):
     search_fields = (
         "name_product",
         "description",
+    )
+
+
+@admin.register(Blog)
+class BlogAdmin(admin.ModelAdmin):
+    list_display = ("id", "title", "content", "created_at", "view_counter")
+    search_fields = (
+        "title",
+        "text",
     )

@@ -66,3 +66,41 @@ class Product(models.Model):
             "created_at",
             "updated_at",
         ]
+
+
+class Blog(models.Model):
+    title = models.CharField(
+        max_length=100,
+        verbose_name="Заголовок",
+        help_text="Введите заголовок статьи"
+    )
+    slug = models.CharField(max_length=200,
+                            verbose_name="slug")
+    content = models.TextField(verbose_name="Содержание")
+    preview_image = models.ImageField(upload_to="blog/image",
+                                      verbose_name="Изображение",
+                                      **NULLABLE,
+                                      help_text="Загрузите изображение статьи")
+    created_at = models.DateField(
+        auto_now_add=True,
+        editable=False,
+        verbose_name="Дата создания (записи в БД)",
+        null=True
+    )
+    is_published = models.BooleanField(
+        default=True,
+        verbose_name="Опубликовано",
+        help_text="Опубликовать статью"
+    )
+    view_counter = models.PositiveIntegerField(
+        default=0,
+        editable=False,
+        verbose_name="Количество просмотров"
+    )
+
+    def __str__(self):
+        return f"{self.title}"
+
+    class Meta:
+        verbose_name = "Статья"
+        verbose_name_plural = "Статьи"
