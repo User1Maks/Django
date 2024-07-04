@@ -28,3 +28,4 @@ class BlogAdmin(admin.ModelAdmin):
         "title",
         "text",
     )
+    prepopulated_fields = {"slug": ("title",)}
