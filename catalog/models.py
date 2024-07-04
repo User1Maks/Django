@@ -75,7 +75,8 @@ class Blog(models.Model):
         help_text="Введите заголовок статьи"
     )
     slug = models.CharField(max_length=200,
-                            verbose_name="slug")
+                            verbose_name="slug",
+                            unique=True)
     content = models.TextField(verbose_name="Содержание")
     preview_image = models.ImageField(upload_to="blog/image",
                                       verbose_name="Изображение",
