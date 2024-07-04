@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = []
@@ -34,7 +33,8 @@ class Migration(migrations.Migration):
                 (
                     "description",
                     models.TextField(
-                        help_text="Введите описание товара", verbose_name="Описание"
+                        help_text="Введите описание товара",
+                        verbose_name="Описание"
                     ),
                 ),
             ],
