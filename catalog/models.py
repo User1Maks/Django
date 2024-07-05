@@ -13,7 +13,7 @@ class Category(models.Model):
     )
 
     def __str__(self):
-        return f"{self.name_category}\n" f"{self.description}\n"
+        return f"{self.name_category}"
 
     class Meta:
         verbose_name = "Категория"
@@ -35,7 +35,9 @@ class Product(models.Model):
         help_text="Загрузите изображение продукта"
     )
     category = models.ForeignKey(
-        Category, on_delete=models.SET_NULL, **NULLABLE, related_name="products"
+        Category, on_delete=models.SET_NULL,
+        **NULLABLE, verbose_name="Категория",
+        related_name="products"
     )
     price = models.FloatField(verbose_name="Цена за покупку")
     created_at = models.DateField(

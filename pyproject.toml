@@ -13,6 +13,8 @@ psycopg2-binary = "^2.9.9"
 pillow = "^10.3.0"
 ipython = "^8.25.0"
 black = "^24.4.2"
+django-crispy-forms = "^2.2"
+crispy-bootstrap4 = "^2024.1"
 
 
 [build-system]

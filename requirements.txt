@@ -3,3 +3,5 @@ psycopg2-binary
 Pillow
 ipython
 black
+django-crispy-forms
+crispy-bootstrap4
