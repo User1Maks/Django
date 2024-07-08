@@ -57,7 +57,7 @@ class ProductsListView(ListView):
             try:
 
                 if len(obj.versions.filter(current_version=True)) > 1:
-                    obj.active_version = obj.versions.last()
+                    obj.active_version = obj.versions.filter(current_version=True).last()
                 else:
                     obj.active_version = obj.versions.get(current_version=True)
             except ObjectDoesNotExist:
@@ -79,7 +79,7 @@ class ProductsListView(ListView):
 class ProductCreateView(GetContextMixin, CreateView):
     model = Product
     form_class = ProductForm
-    success_url = reverse_lazy("catalog:base")
+    success_url = reverse_lazy("catalog:product_list")
 
 
 class ProductUpdateView(GetContextMixin, UpdateView):
