@@ -2,7 +2,7 @@ import json
 
 from django.forms import ModelForm, forms
 
-from catalog.models import Product
+from catalog.models import Product, Version
 
 
 class ProductForm(ModelForm):
@@ -31,3 +31,9 @@ class ProductForm(ModelForm):
             if word in cleaned_data.lower():
                 raise forms.ValidationError("Недопустимое слово")
         return cleaned_data
+
+
+class VersionForm(ModelForm):
+    class Meta:
+        model = Version
+        fields = '__all__'

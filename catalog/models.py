@@ -32,12 +32,14 @@ class Product(models.Model):
         upload_to="products/image",
         **NULLABLE,
         verbose_name="Изображение",
-        help_text="Загрузите изображение продукта"
+        help_text="Загрузите изображение продукта",
     )
     category = models.ForeignKey(
-        Category, on_delete=models.SET_NULL,
-        **NULLABLE, verbose_name="Категория",
-        related_name="products"
+        Category,
+        on_delete=models.SET_NULL,
+        **NULLABLE,
+        verbose_name="Категория",
+        related_name="products",
     )
     price = models.FloatField(verbose_name="Цена за покупку")
     created_at = models.DateField(
@@ -70,34 +72,63 @@ class Product(models.Model):
         ]
 
 
+class Version(models.Model):
+    product = models.ForeignKey(
+        Product,
+        related_name="versions",
+        on_delete=models.SET_NULL,
+        **NULLABLE,
+        verbose_name="Продукты",
+    )
+    version_number = models.PositiveIntegerField(
+        verbose_name="Номер версии",
+        help_text="Введите номер версии продукта",
+        default=1,
+    )
+    name_version = models.CharField(
+        max_length=100,
+        verbose_name="Название версии",
+        help_text="Введите название версии продукта",
+    )
+    current_version = models.BooleanField(
+        default=True,
+        verbose_name="Текущая версия",
+        help_text="Отметьте, является ли текущей версией продукта актуальной",
+    )
+
+    def __str__(self):
+        return f"{self.version_number} - {self.name_version}"
+
+    class Meta:
+        verbose_name = "Версия продукта"
+        verbose_name_plural = "Версии продуктов"
+
+
 class Blog(models.Model):
     title = models.CharField(
-        max_length=100,
-        verbose_name="Заголовок",
+        max_length=100, verbose_name="Заголовок",
         help_text="Введите заголовок статьи"
     )
-    slug = models.CharField(max_length=200,
-                            verbose_name="slug")
+    slug = models.CharField(max_length=200, verbose_name="slug")
     content = models.TextField(verbose_name="Содержание")
-    preview_image = models.ImageField(upload_to="blog/image",
-                                      verbose_name="Изображение",
-                                      **NULLABLE,
-                                      help_text="Загрузите изображение статьи")
+    preview_image = models.ImageField(
+        upload_to="blog/image",
+        verbose_name="Изображение",
+        **NULLABLE,
+        help_text="Загрузите изображение статьи",
+    )
     created_at = models.DateField(
         auto_now_add=True,
         editable=False,
         verbose_name="Дата создания (записи в БД)",
-        null=True
+        null=True,
     )
     is_published = models.BooleanField(
-        default=True,
-        verbose_name="Опубликовано",
+        default=True, verbose_name="Опубликовано",
         help_text="Опубликовать статью"
     )
     view_counter = models.PositiveIntegerField(
-        default=0,
-        editable=False,
-        verbose_name="Количество просмотров"
+        default=0, editable=False, verbose_name="Количество просмотров"
     )
 
     def __str__(self):

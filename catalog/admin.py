@@ -1,5 +1,5 @@
 from django.contrib import admin
-from catalog.models import Category, Product, Blog
+from catalog.models import Category, Product, Blog, Version
 
 
 @admin.register(Category)
@@ -30,3 +30,8 @@ class BlogAdmin(admin.ModelAdmin):
         "text",
     )
     prepopulated_fields = {"slug": ("title",)}
+
+
+@admin.register(Version)
+class VersionAdmin(admin.ModelAdmin):
+    list_display = ("id", "version_number", "name_version", "current_version")
