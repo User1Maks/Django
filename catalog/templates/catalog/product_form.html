@@ -1,0 +1,39 @@
+{% extends 'catalog/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+
+<div class="container">
+    <form class="row" method="post" enctype="multipart/form-data">
+        <div class="col-6">
+            <div class="card">
+                <p class="p-2 fs-4 card-text mx-auto">Продукт</p>
+                <div class="card-body">
+                    {{ my_formset|crispy }}
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    {% if object %}
+                    Сохранить
+                    {% else %}
+                    Создать
+                    {% endif %}
+                </button>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="card">
+                <p class="p-2 fs-4 card-text mx-auto">Версия продукта</p>
+                <div class="card-body">
+                    {{ formset.management_form }}
+                    {% for form in formset.forms %}
+                    {{ my_formset|crispy }}
+                    {{ form.as_p }}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

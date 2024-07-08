@@ -1,17 +1,68 @@
 from django.shortcuts import render
-from catalog.models import Product, Blog
-from django.views.generic import (ListView,
-                                  DetailView,
-                                  View,
-                                  CreateView,
-                                  UpdateView,
-                                  DeleteView)
+from django.forms import inlineformset_factory
+from catalog.forms import ProductForm, VersionForm
+from django.core.exceptions import ObjectDoesNotExist
+from catalog.models import Product, Blog, Version
+from django.views.generic import (
+    ListView,
+    DetailView,
+    View,
+    CreateView,
+    UpdateView,
+    DeleteView,
+)
 from django.urls import reverse_lazy, reverse
 from django.utils.text import slugify
 
 
+class GetContextMixin:
+    def get_context_data(self, **kwargs):
+        """
+        Метод добавляет поле 'current_version' в контекст шаблона.
+        :param kwargs:
+        :return:
+        """
+        context_data = super().get_context_data(**kwargs)
+        ProductFormset = inlineformset_factory(Product, Version, VersionForm,
+                                               extra=1)
+        if self.request.method == "POST":
+            context_data["formset"] = ProductFormset(
+                self.request.POST, instance=self.object
+            )
+        else:
+            context_data["formset"] = ProductFormset(instance=self.object)
+        return context_data
+
+    def form_valid(self, form):
+        """Метод сохраняет данные формы по "formset" """
+        context_data = self.get_context_data()
+        formset = context_data["formset"]
+        if form.is_valid() and formset.is_valid():
+            self.object = form.save()
+            formset.instance = self.object
+            formset.save()
+            return super().form_valid(form)
+        else:
+            return self.render_to_response(
+                self.get_context_data(form=form, formset=formset)
+            )
+
+
 class ProductsListView(ListView):
     model = Product
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        for obj in context['object_list']:
+            try:
+
+                if len(obj.versions.filter(current_version=True)) > 1:
+                    obj.active_version = obj.versions.last()
+                else:
+                    obj.active_version = obj.versions.get(current_version=True)
+            except ObjectDoesNotExist:
+                obj.active_version = "Версия продукта не указана"
+        return context
 
     # app_name/<model_name>_<action>
     # catalog/product_list.html
@@ -24,16 +75,39 @@ class ProductsListView(ListView):
 #     }
 #     return render(requests, "products_list.html", context)
 
+
+class ProductCreateView(GetContextMixin, CreateView):
+    model = Product
+    form_class = ProductForm
+    success_url = reverse_lazy("catalog:base")
+
+
+class ProductUpdateView(GetContextMixin, UpdateView):
+    model = Product
+    form_class = ProductForm
+    success_url = reverse_lazy("catalog:product_list")
+
+    def get_success_url(self):
+        return reverse("catalog:product_detail", args=[self.kwargs.get("pk")])
+
+
 class ProductDetailView(DetailView):
     model = Product
 
 
 # def products_detail(request, pk):
+
+
 #     product = get_object_or_404(Product, pk=pk)
 #     context = {
 #         "product": product
 #     }
 #     return render(request, 'product_detail.html', context)
+
+
+class ProductDeleteView(DeleteView):
+    model = Product
+    success_url = reverse_lazy("catalog:product_list")
 
 
 class ContactsView(View):

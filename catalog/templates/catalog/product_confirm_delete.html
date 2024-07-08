@@ -1,5 +1,5 @@
-{% extends 'catalog/blog_detail.html' %}
-{% block blog %}
+{% extends 'catalog/base.html' %}
+{% block content %}
 
 
 <div class="container-sm col-md-8 mx-auto">
@@ -8,7 +8,7 @@
             <form class="row" method="post" enctype="multipart/form-data">
                 <div class="card">
                     <p class="card-text">Действительно хотите удалить
-                        {{object.title}} ?</p>
+                        {{object.name_product}} ?</p>
                     <div class="card-body">
                         {% csrf_token %}
                     </div>
@@ -16,7 +16,7 @@
                         Удалить
                     </button>
                     <a class="btn btn-primary"
-                       href="{% url 'catalog:blog_base'%}"
+                       href="{% url 'catalog:product_list'%}"
                        role="button">Отменить</a>
                 </div>
 

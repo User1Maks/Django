@@ -17,6 +17,9 @@
                     <p class="card-text">
                         {{object.description | truncatechars:100}}
                     </p>
+                    <p class="card-text">
+                        {{ object.active_version }}
+                    </p>
                 </div>
                 <div class="d-flex flex-column align-items-center gap-2">
                     <div class="fs-4 fw-bold">{{object.price}} $</div>
@@ -25,7 +28,7 @@
                         Купить
                     </button>
                     <a class="btn btn-primary"
-                       href="{% url 'catalog:products_detail' object.pk %}"
+                       href="{% url 'catalog:product_detail' object.pk %}"
                        role="button">Посмотреть</a>
                 </div>
             </div>

@@ -20,9 +20,21 @@
                             class="btn btn-lg btn-block btn-outline-primary">
                         Купить
                     </button>
+
+                    <a class="p-2 btn btn-warning "
+                       href="{% url 'catalog:product_update' object.pk %}"
+                       role="button">Редактировать</a>
+
+                    <a class="p-2 btn btn-danger "
+                       href="{% url 'catalog:product_delete' object.pk %}"
+                       role="button">Удалить</a>
+
+
                     <a class="btn btn-primary"
-                       href="{% url 'catalog:base' %}"
+                       href="{% url 'catalog:product_list' %}"
                        role="button">Назад</a>
+
+
                 </div>
             </div>
         </div>
