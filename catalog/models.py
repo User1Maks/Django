@@ -1,6 +1,6 @@
 from django.db import models
 
-NULLABLE = {"blank": True, "null": True}
+from users.models import User, NULLABLE
 
 
 class Category(models.Model):
@@ -54,6 +54,8 @@ class Product(models.Model):
         verbose_name="Дата последнего изменения (записи в БД)",
         null=True,
     )
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, **NULLABLE,
+                              verbose_name="Владелец", related_name="products")
 
     def __str__(self):
         return f"{self.name_product}"
@@ -89,6 +91,7 @@ class Version(models.Model):
         max_length=100,
         verbose_name="Название версии",
         help_text="Введите название версии продукта",
+        **NULLABLE
     )
     current_version = models.BooleanField(
         default=True,

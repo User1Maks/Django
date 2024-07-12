@@ -8,13 +8,14 @@ packages = [{include = "20"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
-django = "^5.0.6"
+django = "4.2"
 psycopg2-binary = "^2.9.9"
 pillow = "^10.3.0"
 ipython = "^8.25.0"
 black = "^24.4.2"
 django-crispy-forms = "^2.2"
 crispy-bootstrap4 = "^2024.1"
+django-phonenumber-field = {extras = ["phonenumberslite"], version = "^8.0.0"}
 
 
 [build-system]

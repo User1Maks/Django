@@ -1,0 +1,19 @@
+{% extends 'catalog/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+
+<div class="container-sm col-md-8 mx-auto">
+    <form class="row" method="post" enctype="multipart/form-data">
+        <div class="col-8 mx-auto">
+            <div class="card">
+                <div class="card-body">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                </div>
+                <button type="submit" class="btn btn-primary">Войти</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

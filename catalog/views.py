@@ -13,14 +13,13 @@ from django.views.generic import (
 )
 from django.urls import reverse_lazy, reverse
 from django.utils.text import slugify
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class GetContextMixin:
     def get_context_data(self, **kwargs):
         """
         Метод добавляет поле 'current_version' в контекст шаблона.
-        :param kwargs:
-        :return:
         """
         context_data = super().get_context_data(**kwargs)
         ProductFormset = inlineformset_factory(Product, Version, VersionForm,
@@ -76,13 +75,20 @@ class ProductsListView(ListView):
 #     return render(requests, "products_list.html", context)
 
 
-class ProductCreateView(GetContextMixin, CreateView):
+class ProductCreateView(LoginRequiredMixin, GetContextMixin, CreateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy("catalog:product_list")
 
+    def form_valid(self, form):
+        product = form.save(commit=False)
+        user = self.request.user
+        product.owner = user
+        product.save()
+        return super().form_valid(form)
 
-class ProductUpdateView(GetContextMixin, UpdateView):
+
+class ProductUpdateView(LoginRequiredMixin, GetContextMixin, UpdateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy("catalog:product_list")
@@ -105,7 +111,7 @@ class ProductDetailView(DetailView):
 #     return render(request, 'product_detail.html', context)
 
 
-class ProductDeleteView(DeleteView):
+class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
     success_url = reverse_lazy("catalog:product_list")
 
@@ -139,7 +145,7 @@ class BlogDetailView(DetailView):
         return self.object
 
 
-class BlogCreateView(CreateView):
+class BlogCreateView(LoginRequiredMixin, CreateView):
     model = Blog
     fields = ("title", "content", "preview_image", "is_published")
     success_url = reverse_lazy("catalog:blog_base")
@@ -147,13 +153,15 @@ class BlogCreateView(CreateView):
     def form_valid(self, form):
         if form.is_valid():
             new_blog = form.save()
+            user = self.request.user
+            new_blog.owner = user
             new_blog.slug = slugify(new_blog.title)
             new_blog.save()
 
         return super().form_valid(form)
 
 
-class BlogUpdateView(UpdateView):
+class BlogUpdateView(LoginRequiredMixin, UpdateView):
     model = Blog
     fields = ("title", "content", "preview_image", "is_published")
     success_url = reverse_lazy("catalog:blog_base")
@@ -162,6 +170,6 @@ class BlogUpdateView(UpdateView):
         return reverse("catalog:blog_detail", args=[self.kwargs.get("pk")])
 
 
-class BlogDeleteView(DeleteView):
+class BlogDeleteView(LoginRequiredMixin, DeleteView):
     model = Blog
     success_url = reverse_lazy("catalog:blog_base")
