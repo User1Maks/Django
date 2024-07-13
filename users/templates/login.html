@@ -15,5 +15,14 @@
             </div>
         </div>
     </form>
+    <hr>
+    <div class="text-center">
+        Забыли пароль? <a href="{% url 'users:password_reset' %}">Сбросить пароль</a>
+    </div>
+    <div class="text-center">
+        Нет аккаунта? <a
+            href="{% url 'users:register' %}">Зарегистрироваться</a>
+    </div>
+
 </div>
 {% endblock %}
