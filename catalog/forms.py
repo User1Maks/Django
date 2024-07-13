@@ -8,7 +8,7 @@ from catalog.models import Product, Version
 class ProductForm(ModelForm):
     class Meta:
         model = Product
-        fields = '__all__'
+        exclude = ('owner',)
 
     def clean_name_product(self):
         cleaned_data = self.cleaned_data.get("name_product")

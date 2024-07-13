@@ -39,6 +39,22 @@ INSTALLED_APPS = [
     "crispy_forms",
     "crispy_bootstrap4",
     "catalog",
+    "users",
+    "phonenumber_field",
+]
+
+# Настройка проверка паролей
+# https://docs.djangoproject.com/en/5.0/topics/auth/passwords/#django.contrib.auth.hashers.make_password
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+    },
 ]
 
 MIDDLEWARE = [
@@ -76,12 +92,10 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "ENGINE": "django.db.backends.postgresql",
         "NAME": "orm_django",
         "USER": "postgres",
         "PASSWORD": "sql",
-        "HOST": "127.0.0.1",
-        "PORT": "5432",
     }
 }
 
@@ -133,3 +147,19 @@ MEDIA_ROOT = BASE_DIR / "media"
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
+
+AUTH_USER_MODEL = "users.User"
+
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"
+REGISTER_REDIRECT_URL = "/"
+
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = "Mr.Maximus19@yandex.ru"
+EMAIL_HOST_PASSWORD = "rjpiwziuacwkgtcg"
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+
+SERVER_EMAIL = EMAIL_HOST_USER
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

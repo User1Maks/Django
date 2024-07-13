@@ -1,7 +1,8 @@
-Django
+Django==4.2
 psycopg2-binary
 Pillow
 ipython
 black
 django-crispy-forms
 crispy-bootstrap4
+django-phonenumber-field[phonenumberslite]
