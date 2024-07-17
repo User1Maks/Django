@@ -3,3 +3,4 @@
 # FBV и CBV 21.1
 # Forms 22.1
 # Authentication 22.2
+# Access rights 23.1
