@@ -57,6 +57,11 @@ class Product(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, **NULLABLE,
                               verbose_name="Владелец", related_name="products")
 
+    is_published = models.BooleanField(
+        default=True, verbose_name="Опубликовано",
+        help_text="Опубликовать продукт"
+    )
+
     def __str__(self):
         return f"{self.name_product}"
 
@@ -71,6 +76,16 @@ class Product(models.Model):
             "price",
             "created_at",
             "updated_at",
+        ]
+        # Для определения прав доступа
+        permissions = [
+            # может отменять публикацию продукта
+            ("can_edit_is_published", "Can edit is published"),
+            # может менять описание любого продукта
+            ("can_edit_description", "Can edit description"),
+            # может менять категорию любого продукта
+            ("can_edit_category", "Can edit category"),
+
         ]
 
 

@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.forms import inlineformset_factory
-from catalog.forms import ProductForm, VersionForm
-from django.core.exceptions import ObjectDoesNotExist
+from catalog.forms import ProductForm, VersionForm, ProductModeratorForm
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from catalog.models import Product, Blog, Version
 from django.views.generic import (
     ListView,
@@ -13,7 +13,10 @@ from django.views.generic import (
 )
 from django.urls import reverse_lazy, reverse
 from django.utils.text import slugify
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import (
+    LoginRequiredMixin,
+    PermissionRequiredMixin
+)
 
 
 class GetContextMixin:
@@ -56,7 +59,8 @@ class ProductsListView(ListView):
             try:
 
                 if len(obj.versions.filter(current_version=True)) > 1:
-                    obj.active_version = obj.versions.filter(current_version=True).last()
+                    obj.active_version = obj.versions.filter(
+                        current_version=True).last()
                 else:
                     obj.active_version = obj.versions.get(current_version=True)
             except ObjectDoesNotExist:
@@ -75,9 +79,11 @@ class ProductsListView(ListView):
 #     return render(requests, "products_list.html", context)
 
 
-class ProductCreateView(LoginRequiredMixin, GetContextMixin, CreateView):
+class ProductCreateView(LoginRequiredMixin, PermissionRequiredMixin,
+                        GetContextMixin, CreateView):
     model = Product
     form_class = ProductForm
+    permission_required = "catalog.add_product"
     success_url = reverse_lazy("catalog:product_list")
 
     def form_valid(self, form):
@@ -94,7 +100,18 @@ class ProductUpdateView(LoginRequiredMixin, GetContextMixin, UpdateView):
     success_url = reverse_lazy("catalog:product_list")
 
     def get_success_url(self):
-        return reverse("catalog:product_detail", args=[self.kwargs.get("pk")])
+        return reverse("catalog:product_detail",
+                       args=[self.kwargs.get("pk")])
+
+    def get_form_class(self):
+        user = self.request.user
+        if user == self.object.owner:
+            return ProductForm
+        if user.has_perm("catalog.can_edit_is_published") and user.has_perm(
+                "catalog.can_edit_description") and user.has_perm(
+                "catalog.can_edit_category"):
+            return ProductModeratorForm
+        raise PermissionDenied
 
 
 class ProductDetailView(DetailView):
@@ -111,8 +128,10 @@ class ProductDetailView(DetailView):
 #     return render(request, 'product_detail.html', context)
 
 
-class ProductDeleteView(LoginRequiredMixin, DeleteView):
+class ProductDeleteView(LoginRequiredMixin, PermissionRequiredMixin,
+                        DeleteView):
     model = Product
+    permission_required = "catalog.delete_product"
     success_url = reverse_lazy("catalog:product_list")
 
 
@@ -167,7 +186,8 @@ class BlogUpdateView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy("catalog:blog_base")
 
     def get_success_url(self):
-        return reverse("catalog:blog_detail", args=[self.kwargs.get("pk")])
+        return reverse("catalog:blog_detail",
+                       args=[self.kwargs.get("pk")])
 
 
 class BlogDeleteView(LoginRequiredMixin, DeleteView):
