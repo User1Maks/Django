@@ -6,6 +6,8 @@
            href="/contacts/">Контакты</a>
         <a class="p-2 ms-1 btn btn-outline-primary"
            href="{% url 'catalog:blog_base' %}">Блог</a>
+        <a class="p-2 ms-1 btn btn-outline-primary"
+           href="{% url 'catalog:category_list' %}">Список категорий</a>
     </nav>
     {% if user.is_authenticated %}
     <a class="p-2 btn btn-outline-primary ms-auto"

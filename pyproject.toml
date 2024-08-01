@@ -16,6 +16,8 @@ black = "^24.4.2"
 django-crispy-forms = "^2.2"
 crispy-bootstrap4 = "^2024.1"
 django-phonenumber-field = {extras = ["phonenumberslite"], version = "^8.0.0"}
+redis = "^5.0.7"
+python-dotenv = "^1.0.1"
 
 
 [build-system]
