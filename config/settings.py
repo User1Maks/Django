@@ -174,7 +174,7 @@ CACHES_ENABLED = True
 if CACHES_ENABLED:
     CACHES = {
         "default": {
-            "BACKEND": os.getenv("CACHES_BACKEND"),
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
             "LOCATION": os.getenv("CACHES_LOCATION"),
         }
     }
