@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.forms import inlineformset_factory
 from catalog.forms import ProductForm, VersionForm, ProductModeratorForm
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
-from catalog.models import Product, Blog, Version
+from catalog.models import Category, Product, Blog, Version
 from django.views.generic import (
     ListView,
     DetailView,
@@ -17,6 +17,9 @@ from django.contrib.auth.mixins import (
     LoginRequiredMixin,
     PermissionRequiredMixin
 )
+from django.conf import settings
+from catalog.services import get_products_from_cache, get_category_list_cache
+from django.core.cache import cache
 
 
 class GetContextMixin:
@@ -50,6 +53,18 @@ class GetContextMixin:
             )
 
 
+class CategoryListView(ListView):
+    """Контролер для вывода списка категорий"""
+    model = Category
+
+    def get_queryset(self):
+        """
+        Подключает функцию get_category_list_cache() из файла services.py для
+        работы с контролером
+        """
+        return get_category_list_cache()
+
+
 class ProductsListView(ListView):
     model = Product
 
@@ -66,6 +81,13 @@ class ProductsListView(ListView):
             except ObjectDoesNotExist:
                 obj.active_version = "Версия продукта не указана"
         return context
+
+    def get_queryset(self):
+        """
+        Подключает функцию get_products_from_cache() из файла services.py для
+        работы с контролером
+        """
+        return get_products_from_cache()
 
     # app_name/<model_name>_<action>
     # catalog/product_list.html
@@ -109,18 +131,33 @@ class ProductUpdateView(LoginRequiredMixin, GetContextMixin, UpdateView):
             return ProductForm
         if user.has_perm("catalog.can_edit_is_published") and user.has_perm(
                 "catalog.can_edit_description") and user.has_perm(
-                "catalog.can_edit_category"):
+            "catalog.can_edit_category"):
             return ProductModeratorForm
         raise PermissionDenied
 
 
 class ProductDetailView(DetailView):
     model = Product
+    permission_required = "catalog.product_detail"
+
+    # Кеширование контроллера через views.py.
+    # В данном проекте кеширование реализованно через urls.py
+    # def get_context_data(self, **kwargs):
+    #     context_data = super().get_context_data(**kwargs)
+    #     if settings.CACHES_ENABLED:
+    #         key = f"product_list_{self.object.pk}"
+    #         product_list = cache.get(key)
+    #         if product_list is None:
+    #             product_list = self.object.product_set.all()
+    #             cache.set(key, product_list)
+    #     else:
+    #         product_list = self.object.product_set.all()
+    #
+    #     context_data['subjects'] = product_list
+    #     return context_data
 
 
 # def products_detail(request, pk):
-
-
 #     product = get_object_or_404(Product, pk=pk)
 #     context = {
 #         "product": product

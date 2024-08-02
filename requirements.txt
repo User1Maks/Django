@@ -6,3 +6,7 @@ black
 django-crispy-forms
 crispy-bootstrap4
 django-phonenumber-field[phonenumberslite]
+redis
+
+# Библиотека для шифрования данных
+python-dotenv
